@@ -1,0 +1,67 @@
+<h1><%= link_to 'Articles', articles_path %></h1>
+
+<%= search_form_for @q do |f| %>
+  <%= f.label 'Keyword' %>
+  <%= f.search_field :title_or_body_or_comments_body_or_author_first_name_or_author_last_name_cont %>
+  (Search by title, body or comments body or author's first and last name)
+  <br>
+  <%= f.check_box :status_cont, {}, 'public', '' %>
+  <%= f.label 'Is public?' %>
+  <br>
+  <%= f.label 'Created >' %>
+  <%= f.date_field :created_at_gteq %>
+  <%= f.submit %>
+<% end %>
+
+<!-- Need to enable q.build_condition on controller
+<%= search_form_for @q do |f| %>
+  <%= f.condition_fields do |c| %>
+    <div>
+      <%= c.attribute_fields do |a| %>
+        <%= a.attribute_select associations: [:author, :comments]%>
+      <% end %>
+      <%= c.predicate_select %>
+      <%= c.value_fields do |v| %>
+        <%= v.text_field :value %>
+      <% end %>
+    </div>
+  <% end %>
+  <%= f.submit %>
+<% end %>
+-->
+<table>
+  <thead>
+    <th>
+      <%= sort_link(@q, :title) do %>
+        <strong>Title</strong>
+      <% end %>
+    </th>
+    <th>
+      <%= sort_link(@q, :body) do %>
+        <strong>Body</strong>
+      <% end %>
+    </th>
+    <th>
+      <%= sort_link(@q, :created_at) do %>
+        <strong>Date</strong>
+      <% end %>
+    </th>
+    <th>
+      <%= sort_link(@q, :author, [:first_name], 'Author') %>
+    </th>
+    <th>
+      <%= sort_link(@q, 'authors.age', 'Age') %>
+    </th>
+  </thead>
+  <tbody>
+    <% @articles.each do |article| %>
+      <tr>
+        <td><%= link_to article.title, article %></td>
+        <td><%= article.body %></td>
+        <td><%= article.created_at %></td>
+        <td><%= article.author.first_name %> <%= article.author.last_name %></td>
+        <td><%= article.author.age %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
